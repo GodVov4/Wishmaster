@@ -26,6 +26,7 @@ def main():
             address_book.save_to_file('address_book.pkl')
             print("Контакт додано!")
 
+
         elif choice == '2':
             search_term = input("Введіть рядок для пошуку: ")
             results = address_book.search_contacts(search_term)
