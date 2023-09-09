@@ -3,6 +3,7 @@ from phonebook.phonebook import main as phonebook_main
 
 def main():
     while True:
+        print("-" * 20)
         print("1. Адресна книга")
         print("2. Сортування")
         print("3. Нотатки")

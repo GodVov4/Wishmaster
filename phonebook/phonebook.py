@@ -1,13 +1,13 @@
 import pickle
 import re
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 class Contact:
     def __init__(self, name, phone, birthday, email):
         self.name = name
         self.phone = phone
-        self.birthday = birthday
+        self.birthday = datetime.strptime(birthday, "%Y-%m-%d").date() # одразу переводжу ДН в обʼєкт datetime
         self.email = email
 
 
@@ -61,18 +61,15 @@ class AddressBook:
             print(f"Контакт {deleted_contact.name} видалено!")
 
     def upcoming_birthdays(self, days):
-        today = datetime.today()
+        today = datetime.now()
+        interval = timedelta(days=days)
         upcoming = []
 
         for contact in self.contacts:
             if contact.birthday:
-                # Перетворюємо дату народження у вірний формат ('день.місяць.рік' -> 'рік-місяць-день')
-                parts = contact.birthday.split('.')
-                formatted_birthday = f'{parts[2]}-{parts[1]}-{parts[0]}'
-                birthday = datetime.strptime(formatted_birthday, '%Y-%m-%d')
-                days_until_birthday = (birthday - today).days
-                if 0 <= days_until_birthday <= days:
-                    upcoming.append((contact, days_until_birthday))
+                temporary_birthday = contact.birthday.replace(year=today.year)
+                if temporary_birthday <= today.date() + interval:
+                    upcoming.append(contact)
 
         return upcoming
 
@@ -97,6 +94,7 @@ def main():
         pass
 
     while True:
+        print("-" * 20)
         print("1. Додати контакт")
         print("2. Знайти контакт")
         print("3. Вивести список всіх контактів")
@@ -126,7 +124,7 @@ def main():
             print("Контакт додано!")
 
         elif choice == '2':
-            search_term = input("Введіть рядок для пошуку: ")
+            search_term = input("Введіть інформацію для пошуку: ")
             results = address_book.search_contacts(search_term)
             if results:
                 print("Знайдені контакти:")
@@ -141,7 +139,7 @@ def main():
 
         elif choice == '4':
             try:
-                index = int(input("Введіть номер контакту для редагування: ")) - 1
+                index = int(input("Введіть номер контакту для редагування: ")) - 1 # якщо контактів багато? Може краще тут реалізувати пошук? Або "Введіть імʼя контакту"?
                 if 0 <= index < len(address_book.contacts):
                     name = input("Введіть нове ім'я контакту: ")
                     phone = input("Введіть новий номер телефону контакту (+380xxxxxxxxx): ")
@@ -171,7 +169,7 @@ def main():
 
         elif choice == '6':
             try:
-                days = int(input("Скільки днів до дня народження перевірити: "))
+                days = int(input("Який проміжок часу перевірити? (введіть число днів): "))
             except ValueError:
                 print("Неправильний формат вводу!")
                 continue  # Перейти на наступну ітерацію циклу
@@ -179,13 +177,14 @@ def main():
             upcoming = address_book.upcoming_birthdays(days)
             if upcoming:
                 print(f"Контакти з днями народження, які настають протягом наступних {days} днів:")
-                for contact, days_until_birthday in upcoming:
+                for contact in upcoming:
                     print(
-                        f"Ім'я: {contact.name}, День народження: {contact.birthday}, Днів до народження: {days_until_birthday}")
+                        f"Ім'я: {contact.name}, День народження: {contact.birthday}")
             else:
                 print("Немає контактів з наближеними днями народження.")
 
         elif choice == '7':
+            print("До побачення!")
             break
 
 
