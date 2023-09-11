@@ -42,13 +42,12 @@ class Notebook:
 
         # Перевіряємо, чи є такий індекс у списку нотаток
         if 0 <= index < len(self.notes):
-            note = self.notes[index]  # Отримуємо нотатку за індексом
 
-        if text:  # Якщо заданий новий текст, то змінюємо текст нотатки
-            note.text = text
+            if text:  # Якщо заданий новий текст, то змінюємо текст нотатки
+                self.notes[index].text = text
 
-        if keywords is not None:  # Якщо заданий новий список ключових слів, то змінюємо ключові слова нотатки
-            note.keywords = keywords
+            if keywords:  # Якщо заданий новий список ключових слів, то змінюємо ключові слова нотатки
+                self.notes[index].keywords = keywords
 
         else:
             # Якщо такого індексу немає, то виводимо повідомлення про помилку
@@ -59,6 +58,7 @@ class Notebook:
 
         # Перевіряємо, чи є такий індекс у списку нотаток
         if 0 <= index < len(self.notes):
+
             self.notes.pop(index)  # Видаляємо нотатку за індексом
             print("Нотатку видалено")
 
