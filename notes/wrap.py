@@ -101,7 +101,7 @@ def main():
             try:
                 # Завантажуємо нотатки з файлу
                 notebook.load_from_file(filename)
-                
+
             except FileNotFoundError:
                 print('Файл не знайдено. Спробуйте ввести знову')
 
