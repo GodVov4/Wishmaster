@@ -7,9 +7,7 @@ class Contact:
     def __init__(self, name, phone, birthday, email):
         self.name = name
         self.phone = phone
-        self.birthday = datetime.strptime(
-            birthday, "%Y-%m-%d"
-        ).date()  # одразу переводжу ДН в обʼєкт datetime
+        self.birthday = datetime.strptime(birthday, "%Y-%m-%d").date()  # одразу переводжу ДН в обʼєкт datetime
         self.email = email
 
 
@@ -34,9 +32,7 @@ class AddressBook:
     def search_contacts(self, search_term):
         results = []
         for contact in self.contacts:
-            if (search_term.lower() in contact.name.lower()) or (
-                search_term in contact.phone
-            ):
+            if (search_term.lower() in contact.name.lower()) or (search_term in contact.phone):
                 results.append(contact)
         return results
 
@@ -44,9 +40,7 @@ class AddressBook:
         if self.contacts:
             print("Список користувачів:")
             for index, contact in enumerate(self.contacts):
-                print(
-                    f"{index + 1}. Ім'я: {contact.name}, Телефон: {contact.phone}, День народження: {contact.birthday}, Пошта: {contact.email}"
-                )
+                print(f"{index + 1}. Ім'я: {contact.name}, Телефон: {contact.phone}, День народження: {contact.birthday}, Пошта: {contact.email}")
         else:
             print("Адресна книга порожня.")
 
@@ -151,7 +145,7 @@ def main():
 
         elif choice == "4":
             try:
-                index = (int(input("Введіть номер контакту для редагування: ")) - 1)  # якщо контактів багато? Може краще тут реалізувати пошук? Або "Введіть імʼя контакту"?
+                index = (int(input("Введіть номер контакту для редагування: ")) - 1)  # це треба покласти аргументом в метод search_contact
                 if 0 <= index < len(address_book.contacts):
                     name = input("Введіть нове ім'я контакту: ")
                     phone = input("Введіть новий номер телефону контакту (+380xxxxxxxxx): ")
@@ -193,9 +187,7 @@ def main():
 
             upcoming = address_book.upcoming_birthdays(days)
             if upcoming:
-                print(
-                    f"Контакти з днями народження, які настають протягом наступних {days} днів:"
-                )
+                print(f"Контакти з днями народження, які настають протягом наступних {days} днів:")
                 for contact in upcoming:
                     print(f"Ім'я: {contact.name}, День народження: {contact.birthday}")
             else:
@@ -209,4 +201,7 @@ def main():
 if __name__ == "__main__":
     main()
 
-
+"""
+Якраз в них має бути валідація полів перед записом. Тільки проперті можеш закинути в Field, щоб не було повторень, а setter викликатиметься через @Field.value.setter
+Також перепиши ініт з того скріна
+"""
