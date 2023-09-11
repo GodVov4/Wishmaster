@@ -1,4 +1,6 @@
 from phonebook.phonebook import main as phonebook_main
+# from sorting.sorting import main as sorting_main
+from notes.wrap import main as notes_main
 from phonebook.phonebook import Contact, AddressBook
 
 
@@ -16,7 +18,14 @@ def main():
             # Виклик функціональності з phonebook.py
             phonebook_main()
 
-        # інші варіанти дій тут...
+        elif choice == '2':
+            # Виклик функціональності з sorting.py
+            # sorting_main()
+            pass
+
+        elif choice == '3':
+            # Виклик функціональності з wrap.py
+            notes_main()
 
         elif choice == '4':
             break
