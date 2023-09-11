@@ -1,5 +1,4 @@
 from phonebook.phonebook import main as phonebook_main
-from phonebook.phonebook import Contact, AddressBook
 
 
 def main():
