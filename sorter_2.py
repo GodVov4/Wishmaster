@@ -150,12 +150,19 @@ class Sorter():
                         
                 
 def main():
-    if sys.argv[0]:
-        folder_for_scan = Path(sys.argv[0])
-        print(f'Start in folder {folder_for_scan.resolve()}')
-    else: 
-        print(f'Start in folder impossible Specify the correct path')
-        
+    # if sys.argv[1]:
+    #     folder_for_scan = Path(sys.argv[1])
+    #     print(f'Start in folder {folder_for_scan.resolve()}')
+    # else: 
+    #     print(f'Start in folder impossible Specify the correct path')
+    try:
+        user_path = Path(sys.argv[1])
+    except IndexError:
+        print(f"You didn`t specify a folder path. Try again. ")
+        exit()
+    if not user_path.exists():
+        print(f"Invalid folder. Try again.")
+        exit()
     #folder_to_scan = sys.argv[0]
     #print(f'start in folder {folder_to_scan}')   
     #scan(Path(folder_to_scan))
