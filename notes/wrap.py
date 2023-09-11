@@ -32,7 +32,10 @@ def main():
 
             notebook.print_notes()
             # Зчитуємо індекс нотатки для редагування
-            index = int(input("Введіть індекс нотатки для редагування: "))
+            try:
+                index = int(input("Введіть індекс нотатки для редагування: "))
+            except ValueError:
+                print('Введіть індекс нотатки')
             # Зчитуємо новий текст нотатки або залишаємо пустим
             text = input("Введіть новий текст нотатки чи залиште пустим: ")
             keywords = input("Введіть нові ключові слова нотатки, розділені комами, чи залиште пустим: ").split(
@@ -40,9 +43,14 @@ def main():
 
             if text or keywords:  # Якщо текст або ключові слова не пусті
 
-                # Редагуємо нотатку за індексом
-                notebook.edit_note(index, text, keywords)
-                print("Нотатку відредаговано")
+                try:
+                    # Редагуємо нотатку за індексом
+                    notebook.edit_note(index, text, keywords)
+                    print("Нотатку відредаговано")
+                #  Перехоплюємо помилку з відсутністю нотатки
+                except UnboundLocalError:
+                    print(
+                        'Нотатки з таким індексом не існує. Створіть нову через пункт 1')
 
             else:
                 # Якщо текст і ключові слова пусті, то виводимо повідомлення про помилку
@@ -54,7 +62,6 @@ def main():
             # Зчитуємо індекс нотатки для видалення
             index = int(input("Введіть індекс нотатки для видалення: "))
             notebook.delete_note(index)  # Видаляємо нотатку за індексом
-            print("Нотатку видалено")
 
         elif choice == "4":
 
@@ -88,15 +95,27 @@ def main():
             print("Нотатки відсортовано")
 
         elif choice == "7":
-            notebook.load_from_file()  # Завантажуємо нотатки з файлу
+
+            filename = input('Введіть назву файлу без розширення ') + ".bin"
+
+            try:
+                # Завантажуємо нотатки з файлу
+                notebook.load_from_file(filename)
+                
+            except FileNotFoundError:
+                print('Файл не знайдено. Спробуйте ввести знову')
 
         elif choice == "8":
 
             result = input("Зберегти нотатку (y) чи ні(n)? ")
             if result == "y":
 
-                notebook.save_to_file()  # Зберігаємо список нотаток у файл
+                filename = input(
+                    "Введіть ім'я файду для збереження нотатки ") + ".bin"
+                # Зберігаємо список нотаток у файл
+                notebook.save_to_file(filename)
                 print("Нотатки збережено")
+
                 break
 
             else:

@@ -6,7 +6,7 @@ import pickle
 class Note:
 
     # Конструктор класу, який приймає текст нотатки та список ключових слів
-    def __init__(self, text, keywords):
+    def __init__(self, text='', keywords=None):
         self.text = text  # Текст нотатки
         self.keywords = keywords  # Список ключових слів
         self.date = datetime.date.today()  # Дата створення нотатки
@@ -25,7 +25,7 @@ class Notebook:
         self.notes = []  # Список нотаток
 
     # Метод, який додає нову нотатку до зошита
-    def add_note(self, text, keywords=None):
+    def add_note(self, text='', keywords=None):
 
         # Створюємо екземпляр класу Note з заданим текстом та ключовими словами
         if keywords:
@@ -52,7 +52,7 @@ class Notebook:
 
         else:
             # Якщо такого індексу немає, то виводимо повідомлення про помилку
-            print("Invalid index")
+            print("Неправильно введений індекс")
 
     # Метод, який видаляє існуючу нотатку за її індексом у списку
     def delete_note(self, index):
@@ -60,9 +60,10 @@ class Notebook:
         # Перевіряємо, чи є такий індекс у списку нотаток
         if 0 <= index < len(self.notes):
             self.notes.pop(index)  # Видаляємо нотатку за індексом
+            print("Нотатку видалено")
 
         else:
-            print("Invalid index")
+            print("Неправильно введений індекс")
 
     # Метод, який повертає список нотаток, які містять заданий текст у своїх полях
     def search_by_text(self, text):
@@ -131,7 +132,11 @@ class Notebook:
     def load_from_file(self, filename):
 
         with open(filename, "rb") as file:
-            return pickle.load(file)
+
+            old_notebook = pickle.load(file)
+            for note in old_notebook.notes:
+                print(note)
+                self.notes.append(note)
 
     def print_notes(self):
 
