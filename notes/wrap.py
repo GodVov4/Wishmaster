@@ -1,6 +1,7 @@
 from .note import Notebook
 
 
+
 def main():
 
     notebook = Notebook()
