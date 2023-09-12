@@ -1,5 +1,5 @@
 from phonebook.phonebook import main as phonebook_main
-# from sorting.sorting import main as sorting_main
+from sorting.sorting import main as sorting_main
 from notes.wrap import main as notes_main
 
 
@@ -20,7 +20,7 @@ def main():
 
         elif choice == '2':
             # Виклик функціональності з sorting.py
-            # sorting_main()
+            sorting_main()
             pass
 
         elif choice == '3':

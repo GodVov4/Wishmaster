@@ -67,12 +67,15 @@ class FileOrganizer:
                         destination_folder = 'other'
 
                     if destination_folder:
-                        shutil.move(file_path, os.path.join(self.folder, destination_folder, new_filename))
+                        try:
+                            shutil.move(file_path, os.path.join(self.folder, destination_folder, new_filename))
 
-                        if extension in ['ZIP', 'GZ', 'TAR']:
-                            shutil.unpack_archive(os.path.join(self.folder, destination_folder, new_filename),
-                                                  os.path.join(self.folder, destination_folder))
-                            os.remove(os.path.join(self.folder, destination_folder, new_filename))
+                            if extension in ['ZIP', 'GZ', 'TAR']:
+                                shutil.unpack_archive(os.path.join(self.folder, destination_folder, new_filename),
+                                                      os.path.join(self.folder, destination_folder))
+                                os.remove(os.path.join(self.folder, destination_folder, new_filename))
+                        except FileNotFoundError:
+                            pass
 
                     progress_bar.update(1)
 
@@ -88,19 +91,26 @@ class FileOrganizer:
 
 
 def main():
-    folder = input("Введіть шлях до теки для організації: ")
+    while True:
+        print('-' * 20)
+        print('Введіть шлях до теки для організації, або ENTER, щоб вийти.')
+        folder = input("Шлях до теки: ")
 
-    if not os.path.isdir(folder):
-        print('Невірний шлях до теки. Вихід...')
-        sys.exit(1)
+        if not folder:
+            print('Вихід...')
+            break
 
-    print(f'Організація файлів у теці: {folder}')
+        if not os.path.isdir(folder):
+            print('Невірний шлях до теки. Спробуйте ще раз')
+            continue
 
-    organizer = FileOrganizer(folder)
+        print(f'Організація файлів у теці: {folder}')
 
-    images, videos, documents, audio, archives, unknown_extensions = organizer.sort_files()
+        organizer = FileOrganizer(folder)
 
-    print('Сортування завершено.')
+        images, videos, documents, audio, archives, unknown_extensions = organizer.sort_files()
+
+        print('Сортування завершено.')
 
 
 if __name__ == '__main__':
