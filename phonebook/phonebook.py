@@ -19,12 +19,12 @@ class AddressBook:
         self.contacts.append(contact)
 
     def save_to_file(self, filename):
-        with open(filename, "wb") as file:
+        with open(f'saves/{filename}', "wb") as file:
             pickle.dump(self.contacts, file)
 
     def load_from_file(self, filename):
         try:
-            with open(filename, "rb") as file:
+            with open(f'saves/{filename}', "rb") as file:
                 self.contacts = pickle.load(file)
         except FileNotFoundError:
             pass
@@ -40,8 +40,8 @@ class AddressBook:
         if self.contacts:
             print("Список користувачів:")
             for index, contact in enumerate(self.contacts):
-                print(
-                    f"{index + 1}. Ім'я: {contact.name}, Телефон: {contact.phone}, День народження: {contact.birthday}, Пошта: {contact.email}")
+                print(f"{index + 1}. Ім'я: {contact.name}, Телефон: {contact.phone}, "
+                      f"День народження: {contact.birthday}, Пошта: {contact.email}")
         else:
             print("Адресна книга порожня.")
 
@@ -67,21 +67,23 @@ class AddressBook:
         for contact in self.contacts:
             if contact.birthday:
                 temporary_birthday = contact.birthday.replace(year=today.year)  # Замінюємо лише рік
-                if today <= temporary_birthday <= today + interval or temporary_birthday <= today <= temporary_birthday + interval:
-                    upcoming.append(contact)
+                if temporary_birthday < today:
+                    temporary_birthday = contact.birthday.replace(year=today.year+1)
+                if (today <= temporary_birthday <= today + interval or
+                        temporary_birthday <= today <= temporary_birthday + interval):
+                    upcoming.append((contact, temporary_birthday-today))
 
         return upcoming
 
 
-
-# Перевірка правильності формату номеру телефону
+# Перевірка правильності формату номера телефону
 def is_valid_phone(phone):
     return bool(re.match(r"^\+380\d{9}$", phone))
 
 
 # Перевірка правильності формату дня народження (дати)
 def is_valid_birthday(birthday):
-    return bool(re.match(r"^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$", birthday))
+    return bool(re.match(r"^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$", birthday))
 
 
 # Перевірка правильності формату пошти
@@ -92,11 +94,8 @@ def is_valid_email(email):
 # Основна частина програми
 def main():
     address_book = AddressBook()
+    address_book.load_from_file("address_book.pkl")
 
-    try:
-        address_book.load_from_file("saves/address_book.pkl")
-    except FileNotFoundError:
-        pass
 
     while True:
         print("-" * 20)
@@ -129,7 +128,7 @@ def main():
 
             contact = Contact(name, phone, birthday, email)
             address_book.add_contact(contact)
-            address_book.save_to_file("saves/address_book.pkl")
+            address_book.save_to_file("address_book.pkl")
             print("Контакт додано!")
 
         # Шукаємо контакт і вже далі щось з ним робимо
@@ -139,9 +138,8 @@ def main():
             if search_results:
                 print("Знайдені контакти:")
                 for index, contact in enumerate(search_results):
-                    print(
-                        f"{index + 1}. Ім'я: {contact.name}, Телефон: {contact.phone}, "
-                        f"День народження: {contact.birthday}, Пошта: {contact.email}")
+                    print(f"{index + 1}. Ім'я: {contact.name}, Телефон: {contact.phone}, "
+                          f"День народження: {contact.birthday}, Пошта: {contact.email}")
             else:
                 print("Контакти не знайдені.")
 
@@ -196,7 +194,7 @@ def main():
                             address_book.contacts.index(contact_to_delete))  # Видаляємо контакт з основного списку
 
                         # Зберігаємо оновлений список контактів
-                        address_book.save_to_file("saves/address_book.pkl")
+                        address_book.save_to_file("address_book.pkl")
 
                     else:
                         print("Номер контакту недійсний.")
@@ -218,8 +216,8 @@ def main():
             upcoming = address_book.upcoming_birthdays(days)
             if upcoming:
                 print(f"Контакти з днями народження, які настають протягом наступних {days} днів:")
-                for contact in upcoming:
-                    print(f"Ім'я: {contact.name}, День народження: {contact.birthday}")
+                for contact, days in upcoming:
+                    print(f"Ім'я: {contact.name}, День народження: {contact.birthday}, залишилось {days.days} днів")
             else:
                 print("Немає контактів з наближеними днями народження.")
 

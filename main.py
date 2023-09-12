@@ -7,10 +7,13 @@ from notes.wrap import main as notes_main
 def main():
     while True:
         print("-" * 20)
+        print('BOT Wishmaster')
+        print("-" * 20)
         print("1. Адресна книга")
         print("2. Сортування")
         print("3. Нотатки")
         print("4. Вийти")
+        print("-" * 20)
 
         choice = input("Виберіть дію: ")
 
