@@ -94,7 +94,7 @@ def main():
     address_book = AddressBook()
 
     try:
-        address_book.load_from_file("address_book.pkl")
+        address_book.load_from_file("saves/address_book.pkl")
     except FileNotFoundError:
         pass
 
@@ -129,7 +129,7 @@ def main():
 
             contact = Contact(name, phone, birthday, email)
             address_book.add_contact(contact)
-            address_book.save_to_file("address_book.pkl")
+            address_book.save_to_file("saves/address_book.pkl")
             print("Контакт додано!")
 
         # Шукаємо контакт і вже далі щось з ним робимо
@@ -140,7 +140,8 @@ def main():
                 print("Знайдені контакти:")
                 for index, contact in enumerate(search_results):
                     print(
-                        f"{index + 1}. Ім'я: {contact.name}, Телефон: {contact.phone}, День народження: {contact.birthday}, Пошта: {contact.email}")
+                        f"{index + 1}. Ім'я: {contact.name}, Телефон: {contact.phone}, "
+                        f"День народження: {contact.birthday}, Пошта: {contact.email}")
             else:
                 print("Контакти не знайдені.")
 
@@ -180,6 +181,7 @@ def main():
                         address_book.save_to_file("address_book.pkl")
                         print("Контакт відредаговано!")
 
+
                 except ValueError:
                     print("Неправильний формат вводу!")
 
@@ -194,7 +196,7 @@ def main():
                             address_book.contacts.index(contact_to_delete))  # Видаляємо контакт з основного списку
 
                         # Зберігаємо оновлений список контактів
-                        address_book.save_to_file("address_book.pkl")
+                        address_book.save_to_file("saves/address_book.pkl")
 
                     else:
                         print("Номер контакту недійсний.")

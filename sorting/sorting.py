@@ -1,7 +1,6 @@
 import os
 import shutil
 import re
-import sys
 from tqdm import tqdm
 
 
