@@ -52,7 +52,6 @@ class AddressBook:
             self.contacts[index].birthday = birthday
             self.contacts[index].email = email
             self.save_to_file("address_book.pkl")
-            print("Контакт відредаговано!")
 
     def delete_contact(self, index):
         if 0 <= index < len(self.contacts):
@@ -68,10 +67,11 @@ class AddressBook:
         for contact in self.contacts:
             if contact.birthday:
                 temporary_birthday = contact.birthday.replace(year=today.year)  # Замінюємо лише рік
-                if temporary_birthday <= today + interval:
+                if today <= temporary_birthday <= today + interval or temporary_birthday <= today <= temporary_birthday + interval:
                     upcoming.append(contact)
 
         return upcoming
+
 
 
 # Перевірка правильності формату номеру телефону
@@ -178,8 +178,7 @@ def main():
 
                         # зберігаємо оновлений список контактів
                         address_book.save_to_file("address_book.pkl")
-
-                        print("Порядковий номер неправильний!")
+                        print("Контакт відредаговано!")
 
                 except ValueError:
                     print("Неправильний формат вводу!")
