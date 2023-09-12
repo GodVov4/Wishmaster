@@ -40,7 +40,8 @@ class AddressBook:
         if self.contacts:
             print("Список користувачів:")
             for index, contact in enumerate(self.contacts):
-                print(f"{index + 1}. Ім'я: {contact.name}, Телефон: {contact.phone}, День народження: {contact.birthday}, Пошта: {contact.email}")
+                print(
+                    f"{index + 1}. Ім'я: {contact.name}, Телефон: {contact.phone}, День народження: {contact.birthday}, Пошта: {contact.email}")
         else:
             print("Адресна книга порожня.")
 
@@ -60,14 +61,14 @@ class AddressBook:
             print(f"Контакт {deleted_contact.name} видалено!")
 
     def upcoming_birthdays(self, days):
-        today = datetime.now()
+        today = datetime.now().date()
         interval = timedelta(days=days)
         upcoming = []
 
         for contact in self.contacts:
             if contact.birthday:
-                temporary_birthday = contact.birthday.replace(year=today.year)
-                if temporary_birthday <= today.date() + interval:
+                temporary_birthday = contact.birthday.replace(year=today.year)  # Замінюємо лише рік
+                if temporary_birthday <= today + interval:
                     upcoming.append(contact)
 
         return upcoming
@@ -107,7 +108,7 @@ def main():
 
         choice = input("Виберіть дію: ")
 
-# Додаємо контакт
+        # Додаємо контакт
         if choice == "1":
             name = input("Введіть ім'я контакту: ")
 
@@ -131,26 +132,28 @@ def main():
             address_book.save_to_file("address_book.pkl")
             print("Контакт додано!")
 
-# Шукаємо контакт і вже далі щось з ним робимо
+        # Шукаємо контакт і вже далі щось з ним робимо
         elif choice == "2":
             search_term = input("Введіть інформацію для пошуку: ")
             search_results = address_book.search_contacts(search_term)
             if search_results:
                 print("Знайдені контакти:")
                 for index, contact in enumerate(search_results):
-                    print(f"{index + 1}. Ім'я: {contact.name}, Телефон: {contact.phone}, День народження: {contact.birthday}, Пошта: {contact.email}")
+                    print(
+                        f"{index + 1}. Ім'я: {contact.name}, Телефон: {contact.phone}, День народження: {contact.birthday}, Пошта: {contact.email}")
             else:
                 print("Контакти не знайдені.")
-            
+
             after_search_choice = input("Натисніть: Редагувати - E, Видалити - D, Головне меню - ENTER: ")
 
-        # редагуємо контакт
+            # редагуємо контакт
             if after_search_choice.lower() == "e":
                 try:
                     index_to_edit = (int(input("Введіть порядковий номер контакту для редагування: ")) - 1)
                     if 0 <= index_to_edit < len(search_results):
-                        
-                        contact_to_edit = search_results[index_to_edit] # Отримуємо контакт для редагування з результатів пошуку
+
+                        contact_to_edit = search_results[
+                            index_to_edit]  # Отримуємо контакт для редагування з результатів пошуку
                         new_name = input("Введіть нове ім'я контакту: ")
                         new_phone = input("Введіть новий номер телефону контакту (+380xxxxxxxxx): ")
                         while not is_valid_phone(new_phone):
@@ -166,7 +169,7 @@ def main():
                         while not is_valid_email(new_email):
                             print("Невірний формат пошти. Введіть ще раз.")
                             new_email = input("Введіть нову пошту контакту: ")
-                        
+
                         # оновлюємо поля контакту
                         contact_to_edit.name = new_name
                         contact_to_edit.phone = new_phone
@@ -177,17 +180,19 @@ def main():
                         address_book.save_to_file("address_book.pkl")
 
                         print("Порядковий номер неправильний!")
-                
+
                 except ValueError:
                     print("Неправильний формат вводу!")
 
-        # видаляємо контакт
+            # видаляємо контакт
             elif after_search_choice.lower() == "d":
                 try:
                     index_to_delete = int(input("Введіть номер контакту для видалення: ")) - 1
                     if 0 <= index_to_delete < len(search_results):
-                        contact_to_delete = search_results[index_to_delete]  # Отримуємо контакт для видалення з результатів пошуку
-                        address_book.delete_contact(address_book.contacts.index(contact_to_delete))  # Видаляємо контакт з основного списку
+                        contact_to_delete = search_results[
+                            index_to_delete]  # Отримуємо контакт для видалення з результатів пошуку
+                        address_book.delete_contact(
+                            address_book.contacts.index(contact_to_delete))  # Видаляємо контакт з основного списку
 
                         # Зберігаємо оновлений список контактів
                         address_book.save_to_file("address_book.pkl")
@@ -196,12 +201,12 @@ def main():
                         print("Номер контакту недійсний.")
                 except ValueError:
                     print("Неправильний формат вводу!")
-            
+
 
         elif choice == "3":
             address_book.display_all_contacts()
 
-  
+
         elif choice == "4":
             try:
                 days = int(input("Який проміжок часу перевірити? (введіть число днів): "))
