@@ -1,4 +1,4 @@
-from note import Notebook
+from .note import Notebook
 
 
 def main():
