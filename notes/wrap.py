@@ -96,7 +96,7 @@ def main():
 
         elif choice == "7":
 
-            filename = input('Введіть назву файлу без розширення ') + ".bin"
+            filename = 'saves/' + input('Введіть назву файлу без розширення ') + ".bin"
 
             try:
                 # Завантажуємо нотатки з файлу
@@ -110,8 +110,8 @@ def main():
             result = input("Зберегти нотатку (y) чи ні(n)? ")
             if result == "y":
 
-                filename = input(
-                    "Введіть ім'я файду для збереження нотатки ") + ".bin"
+                filename = 'saves/' + input(
+                    "Введіть ім'я файлу для збереження нотатки ") + ".bin"
                 # Зберігаємо список нотаток у файл
                 notebook.save_to_file(filename)
                 print("Нотатки збережено")
