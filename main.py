@@ -5,6 +5,7 @@ from notes.wrap import main as notes_main
 
 
 
+
 def main():
     while True:
         print("-" * 20)
