@@ -1,7 +1,6 @@
 import re
-import os
-import json  # Додайте бібліотеку json
-from datetime import datetime, timedelta
+import json
+from datetime import datetime, timedelta, date
 
 
 class Contact:
@@ -16,10 +15,10 @@ class AddressBook:
     def __init__(self):
         self.contacts = []
 
-    def add_contact(self, contact):
+    def add_contact(self, contact: Contact) -> None:
         self.contacts.append(contact)
 
-    def save_to_file(self, filename):
+    def save_to_file(self, filename: str) -> None:
         with open(f'saves/{filename}', "w") as file:
             data = [{'name': contact.name,
                      'phone': contact.phone,
@@ -27,7 +26,8 @@ class AddressBook:
                      'email': contact.email}
                     for contact in self.contacts]
             json.dump(data, file)
-    def load_from_file(self, filename):
+
+    def load_from_file(self, filename: str) -> None:
         try:
             with open(f'saves/{filename}', "r") as file:
                 data = json.load(file)
@@ -35,14 +35,14 @@ class AddressBook:
         except FileNotFoundError:
             pass
 
-    def search_contacts(self, search_term):
+    def search_contacts(self, search_term: str) -> list:
         results = []
         for contact in self.contacts:
             if (search_term.lower() in contact.name.lower()) or (search_term in contact.phone):
                 results.append(contact)
         return results
 
-    def display_all_contacts(self):
+    def display_all_contacts(self) -> None:
         if self.contacts:
             print("Список користувачів:")
             for index, contact in enumerate(self.contacts):
@@ -51,28 +51,29 @@ class AddressBook:
         else:
             print("Адресна книга порожня.")
 
-    def edit_contact(self, index, name, phone, birthday, email):
+    def edit_contact(self, index: int, name: str, phone: str, birthday: str, email: str) -> None:
         if 0 <= index < len(self.contacts):
             self.contacts[index].name = name
             self.contacts[index].phone = phone
-            self.contacts[index].birthday = birthday
+            self.contacts[index].birthday = datetime.strptime(birthday, "%Y-%m-%d").date()
             self.contacts[index].email = email
             self.save_to_file("address_book.json")
 
-    def delete_contact(self, index):
+    def delete_contact(self, index: int) -> None:
         if 0 <= index < len(self.contacts):
             deleted_contact = self.contacts.pop(index)
             self.save_to_file("address_book.json")
             print(f"Контакт {deleted_contact.name} видалено!")
 
-    def upcoming_birthdays(self, days):
+    def upcoming_birthdays(self, days: int) -> list:
         today = datetime.now().date()
         interval = timedelta(days=days)
         upcoming = []
 
         for contact in self.contacts:
-            if contact.birthday:
-                temporary_birthday = contact.birthday.replace(year=today.year)
+            birthday: date = contact.birthday
+            if birthday:
+                temporary_birthday = birthday.replace(year=today.year)
                 if temporary_birthday < today:
                     temporary_birthday = temporary_birthday.replace(year=today.year + 1)  # Змінюємо рік
                 if (today <= temporary_birthday <= today + interval or
@@ -82,19 +83,18 @@ class AddressBook:
         return upcoming
 
 
-
 # Перевірка правильності формату номера телефону
-def is_valid_phone(phone):
+def is_valid_phone(phone: str) -> bool:
     return bool(re.match(r"^\+380\d{9}$", phone))
 
 
 # Перевірка правильності формату дня народження (дати)
-def is_valid_birthday(birthday):
+def is_valid_birthday(birthday: str) -> bool:
     return bool(re.match(r"^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$", birthday))
 
 
 # Перевірка правильності формату пошти
-def is_valid_email(email):
+def is_valid_email(email: str) -> bool:
     return bool(re.match(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", email))
 
 
@@ -102,7 +102,6 @@ def is_valid_email(email):
 def main():
     address_book = AddressBook()
     address_book.load_from_file("address_book.json")
-
 
     while True:
         print("-" * 20)
@@ -155,11 +154,10 @@ def main():
             # редагуємо контакт
             if after_search_choice.lower() == "e":
                 try:
-                    index_to_edit = (int(input("Введіть порядковий номер контакту для редагування: ")) - 1)
+                    index_to_edit = int(input("Введіть порядковий номер контакту для редагування: ")) - 1
                     if 0 <= index_to_edit < len(search_results):
 
-                        contact_to_edit = search_results[
-                            index_to_edit]  # Отримуємо контакт для редагування з результатів пошуку
+                        contact_to_edit = search_results[index_to_edit]  # Отримуємо контакт для редагування з пошуку
                         new_name = input("Введіть нове ім'я контакту: ")
                         new_phone = input("Введіть новий номер телефону контакту (+380xxxxxxxxx): ")
                         while not is_valid_phone(new_phone):
@@ -177,15 +175,8 @@ def main():
                             new_email = input("Введіть нову пошту контакту: ")
 
                         # оновлюємо поля контакту
-                        contact_to_edit.name = new_name
-                        contact_to_edit.phone = new_phone
-                        contact_to_edit.birthday = new_birthday
-                        contact_to_edit.email = new_email
-
-                        # зберігаємо оновлений список контактів
-                        address_book.save_to_file("address_book.json")
+                        address_book.edit_contact(index_to_edit, new_name, new_phone, new_birthday, new_email)
                         print("Контакт відредаговано!")
-
 
                 except ValueError:
                     print("Неправильний формат вводу!")
@@ -208,10 +199,8 @@ def main():
                 except ValueError:
                     print("Неправильний формат вводу!")
 
-
         elif choice == "3":
             address_book.display_all_contacts()
-
 
         elif choice == "4":
             try:
