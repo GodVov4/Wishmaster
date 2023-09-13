@@ -194,19 +194,11 @@ def main():
 
             else:
 
-                result = input("Зберегти нотатку (y) чи ні(n)? ")
-                if result == "y":
+                # Зберігаємо список нотаток у файл
+                notebook.save_to_file()
+                print("Нотатки збережено")
 
-                    filename = input(
-                        "Введіть ім'я файду для збереження нотатки ")
-                    # Зберігаємо список нотаток у файл
-                    notebook.save_to_file(filename)
-                    print("Нотатки збережено")
-
-                    break
-
-                else:
-                    break
+                break
 
         else:
             print("Невірний вибір")
