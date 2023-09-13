@@ -16,7 +16,7 @@ def main():
         print("5 - Пошук за ключовим словом")
         print("6 - Сортування по даті створення")
         print("7 - Завантажити нотатку")
-        print("8 - Вихід з циклу")
+        print("8 - Зберегти та вийти")
 
         choice = input("Ваш вибір: ")
 
@@ -32,7 +32,7 @@ def main():
 
         elif choice == "2":
 
-            notebook.print_notes()
+            print(notebook.print_notes())
             # Зчитуємо індекс нотатки для редагування
             try:
                 index = int(input("Введіть індекс нотатки для редагування: "))
@@ -60,7 +60,7 @@ def main():
 
         elif choice == "3":
 
-            notebook.print_notes()
+            print(notebook.print_notes())
             # Зчитуємо індекс нотатки для видалення
             index = int(input("Введіть індекс нотатки для видалення: "))
             notebook.delete_note(index)  # Видаляємо нотатку за індексом
