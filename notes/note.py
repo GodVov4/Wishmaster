@@ -1,4 +1,5 @@
 import datetime
+import os.path
 import pickle
 
 
@@ -102,7 +103,7 @@ class Notebook:
         self.notes.sort(key=lambda note: note.date, reverse=reverse)
 
     # Метод, який зберігає список нотаток у json файл
-    def save_to_file(self, filename=None):
+    def save_to_file(self, filename):
 
         if not filename:
 
@@ -113,17 +114,26 @@ class Notebook:
 
                 if words:
                     # Якщо є хоча б одне слово, то використовуємо перше слово як ім'я файлу
-                    filename = words[0] + ".bin"
+                    file = words[0] + ".pickle"
 
                 else:
                     # Якщо немає слів, то використовуємо дату створення нотатки як ім'я файлу
-                    filename = str(note.date) + ".bin"
+                    file = str(note.date) + ".pickle"
 
-            with open(filename, "wb") as file:
+            if os.path.exists(file):
 
-                pickle.dump(self, file)
+                path_list = file.split('.')
+                file = path_list[0] + '1.' + path_list[1]
+                with open(file, "wb") as f:
+                    pickle.dump(self, f)
+
+            else:
+                with open(file, "wb") as f:
+                    pickle.dump(self, f)
 
         else:
+
+            filename = filename + '.pickle'
             with open(filename, "wb") as file:
 
                 pickle.dump(self, file)
