@@ -17,6 +17,7 @@ def main():
 
         choice = input("Виберіть дію: ")
 
+
         if choice == '1':
             # Виклик функціональності з phonebook.py
             phonebook_main()
