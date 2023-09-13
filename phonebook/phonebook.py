@@ -213,7 +213,7 @@ def main():
             if upcoming:
                 print(f"Контакти з днями народження, які настають протягом наступних {days} днів:")
                 for contact, days in upcoming:
-                    print(f"Ім'я: {contact.name}, День народження: {contact.birthday}, залишилось {days.days} днів")
+                    print(f"Ім'я: {contact.name}, День народження: {contact.birthday}, Днів залишилось: {days.days}.")
             else:
                 print("Немає контактів з наближеними днями народження.")
 
