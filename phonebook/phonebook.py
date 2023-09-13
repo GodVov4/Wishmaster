@@ -1,5 +1,6 @@
-import pickle
 import re
+import os
+import json  # Додайте бібліотеку json
 from datetime import datetime, timedelta
 
 
@@ -7,7 +8,7 @@ class Contact:
     def __init__(self, name, phone, birthday, email):
         self.name = name
         self.phone = phone
-        self.birthday = datetime.strptime(birthday, "%Y-%m-%d").date()  # одразу переводжу ДН в обʼєкт datetime
+        self.birthday = datetime.strptime(birthday, "%Y-%m-%d").date()
         self.email = email
 
 
@@ -19,13 +20,18 @@ class AddressBook:
         self.contacts.append(contact)
 
     def save_to_file(self, filename):
-        with open(f'saves/{filename}', "wb") as file:
-            pickle.dump(self.contacts, file)
-
+        with open(f'saves/{filename}', "w") as file:
+            data = [{'name': contact.name,
+                     'phone': contact.phone,
+                     'birthday': str(contact.birthday),  # Перетворюємо дату на рядок
+                     'email': contact.email}
+                    for contact in self.contacts]
+            json.dump(data, file)
     def load_from_file(self, filename):
         try:
-            with open(f'saves/{filename}', "rb") as file:
-                self.contacts = pickle.load(file)
+            with open(f'saves/{filename}', "r") as file:
+                data = json.load(file)
+                self.contacts = [Contact(**item) for item in data]  # Відновлення контактів з JSON
         except FileNotFoundError:
             pass
 
@@ -51,12 +57,12 @@ class AddressBook:
             self.contacts[index].phone = phone
             self.contacts[index].birthday = birthday
             self.contacts[index].email = email
-            self.save_to_file("address_book.pkl")
+            self.save_to_file("address_book.json")
 
     def delete_contact(self, index):
         if 0 <= index < len(self.contacts):
             deleted_contact = self.contacts.pop(index)
-            self.save_to_file("address_book.pkl")
+            self.save_to_file("address_book.json")
             print(f"Контакт {deleted_contact.name} видалено!")
 
     def upcoming_birthdays(self, days):
@@ -66,12 +72,12 @@ class AddressBook:
 
         for contact in self.contacts:
             if contact.birthday:
-                temporary_birthday = contact.birthday.replace(year=today.year)  # Замінюємо лише рік
+                temporary_birthday = contact.birthday.replace(year=today.year)
                 if temporary_birthday < today:
-                    temporary_birthday = contact.birthday.replace(year=today.year+1)
+                    temporary_birthday = temporary_birthday.replace(year=today.year + 1)  # Змінюємо рік
                 if (today <= temporary_birthday <= today + interval or
                         temporary_birthday <= today <= temporary_birthday + interval):
-                    upcoming.append((contact, temporary_birthday-today))
+                    upcoming.append((contact, temporary_birthday - today))
 
         return upcoming
 
@@ -95,7 +101,7 @@ def is_valid_email(email):
 # Основна частина програми
 def main():
     address_book = AddressBook()
-    address_book.load_from_file("address_book.pkl")
+    address_book.load_from_file("address_book.json")
 
 
     while True:
@@ -129,7 +135,7 @@ def main():
 
             contact = Contact(name, phone, birthday, email)
             address_book.add_contact(contact)
-            address_book.save_to_file("address_book.pkl")
+            address_book.save_to_file("address_book.json")
             print("Контакт додано!")
 
         # Шукаємо контакт і вже далі щось з ним робимо
@@ -177,7 +183,7 @@ def main():
                         contact_to_edit.email = new_email
 
                         # зберігаємо оновлений список контактів
-                        address_book.save_to_file("address_book.pkl")
+                        address_book.save_to_file("address_book.json")
                         print("Контакт відредаговано!")
 
 
@@ -195,7 +201,7 @@ def main():
                             address_book.contacts.index(contact_to_delete))  # Видаляємо контакт з основного списку
 
                         # Зберігаємо оновлений список контактів
-                        address_book.save_to_file("address_book.pkl")
+                        address_book.save_to_file("address_book.json")
 
                     else:
                         print("Номер контакту недійсний.")

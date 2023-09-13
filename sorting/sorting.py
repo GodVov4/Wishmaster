@@ -112,6 +112,28 @@ def main():
 
         print('Сортування завершено.')
 
+        # Після завершення сортування виведемо головне меню для подальшої роботи
+        while True:
+            print('-' * 20)
+            print('Головне меню:')
+            print('1. Сортувати файли в інші теки')
+            print('2. Вийти')
+            choice = input('Виберіть опцію: ')
+
+            if choice == '1':
+                folder = input('Введіть шлях до теки для сортування: ')
+                if os.path.isdir(folder):
+                    organizer = FileOrganizer(folder)
+                    organizer.sort_files()
+                else:
+                    print('Невірний шлях до теки.')
+
+            elif choice == '2':
+                print('Вихід...')
+                return
+
+            else:
+                print('Невірний вибір. Спробуйте ще раз.')
 
 if __name__ == '__main__':
     main()
