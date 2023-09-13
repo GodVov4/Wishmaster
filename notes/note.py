@@ -106,42 +106,44 @@ class Notebook:
         '''
           |============================
           | Залишаю filename і його обробку у цьому методі, для можливості 
-          | розширення. Наприклад, для збереження користувачем вручну
+          | розширення. Наприклад, для збереження нотаток вручну
           |============================
         '''
 
-        if not filename:
+        # if not filename:
 
-            for note in self.notes:  # Проходимо по всіх нотатках у нотатнику
+        for note in self.notes:  # Проходимо по всіх нотатках у нотатнику
 
-                text = note.text  # Отримуємо текст нотатки
-                words = text.split()  # Розбиваємо текст на слова за пробілами
+            text = note.text  # Отримуємо текст нотатки
+            words = text.split()  # Розбиваємо текст на слова за пробілами
 
-                if words:
-                    # Якщо є хоча б одне слово, то використовуємо перше слово як ім'я файлу
-                    file = words[0] + ".pickle"
-
-                else:
-                    # Якщо немає слів, то використовуємо дату створення нотатки як ім'я файлу
-                    file = str(note.date) + ".pickle"
-
-            if os.path.exists(file):
-
-                path_list = file.split('.')
-                file = path_list[0] + '1.' + path_list[1]
-                with open(file, "wb") as f:
-                    pickle.dump(self, f)
+            if words:
+                # Якщо є хоча б одне слово, то використовуємо перше слово як ім'я файлу
+                file = words[0] + ".pickle"
+                break
 
             else:
-                with open(file, "wb") as f:
-                    pickle.dump(self, f)
+                # Якщо немає слів, то використовуємо дату створення нотатки як ім'я файлу
+                file = str(note.date) + ".pickle"
+                break
+
+        if os.path.exists(file):
+
+            path_list = file.split('.')
+            file = path_list[0] + '1.' + path_list[1]
+            with open(file, "wb") as f:
+                pickle.dump(self, f)
 
         else:
+            with open(file, "wb") as f:
+                pickle.dump(self, f)
 
-            filename = filename + '.pickle'
-            with open(filename, "wb") as file:
+        # else:
 
-                pickle.dump(self, file)
+        #     filename = filename + '.pickle'
+        #     with open(filename, "wb") as file:
+
+        #         pickle.dump(self, file)
 
     # Метод, який завантажує список нотаток з файлy
     def load_from_file(self, filename):
@@ -156,4 +158,4 @@ class Notebook:
     def print_notes(self):
 
         for i, note in enumerate(self.notes):
-            return f"Індекс:{i}. {note}"
+            print(f"Індекс:{i}. {note}")

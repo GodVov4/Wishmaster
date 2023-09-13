@@ -68,7 +68,7 @@ def main():
 
             else:
 
-                print(notebook.print_notes())
+                notebook.print_notes()
 
                 # Зчитуємо індекс нотатки для редагування
                 try:
@@ -107,7 +107,7 @@ def main():
 
             else:
 
-                print(notebook.print_notes())
+                notebook.print_notes()
                 # Зчитуємо індекс нотатки для видалення
                 index = int(input("Введіть індекс нотатки для видалення: "))
                 notebook.delete_note(index)  # Видаляємо нотатку за індексом
