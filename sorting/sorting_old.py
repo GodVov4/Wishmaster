@@ -2,13 +2,10 @@ import os
 import shutil
 import re
 from tqdm import tqdm
-import pathlib
-from pathlib import Path
 
 
 class FileOrganizer:
     def __init__(self, folder):
-    
         self.folder = folder
         self.directories = ['images', 'videos', 'documents', 'audio', 'archives', 'other']
         self.extensions_mapping = {
@@ -38,15 +35,14 @@ class FileOrganizer:
             os.makedirs(os.path.join(self.folder, directory), exist_ok=True)
 
     def sort_files(self):
-        #self.create_directories()
+        self.create_directories()
 
         images = []
         videos = []
         documents = []
         audio = []
         archives = []
-        others = []                # заміна unknown_extensions на others
-       
+        unknown_extensions = []
 
         # Count total files for progress calculation
         total_files = sum(len(files) for _, _, files in os.walk(self.folder))
@@ -55,7 +51,7 @@ class FileOrganizer:
         for root, dirs, files in os.walk(self.folder):
             for file in files:
                 file_path = os.path.join(root, file)
-                extension = pathlib.Path(file).suffix                   # os.path.splitext(file)
+                _, extension = os.path.splitext(file)
                 new_filename = self.normalize(file)
 
                 destination_folder = None
@@ -66,9 +62,19 @@ class FileOrganizer:
                         destination_folder = directory
                         break
                     else:
-                        others.append(file_path)   # змінила з unknovn_extent.append(extention)
-                        destination_folder = others
+                        unknown_extensions.append(new_filename)
+                        destination_folder = 'other'
 
+                    if destination_folder:
+                        try:
+                            shutil.move(file_path, os.path.join(self.folder, destination_folder, new_filename))
+
+                            if extension in ['ZIP', 'GZ', 'TAR']:
+                                shutil.unpack_archive(os.path.join(self.folder, destination_folder, new_filename),
+                                                      os.path.join(self.folder, destination_folder))
+                                os.remove(os.path.join(self.folder, destination_folder, new_filename))
+                        except FileNotFoundError:
+                            pass
 
                     progress_bar.update(1)
 
@@ -80,7 +86,7 @@ class FileOrganizer:
                     if not os.listdir(dir_path):
                         os.rmdir(dir_path)
 
-            return images, videos, documents, audio, archives, others
+            return images, videos, documents, audio, archives, unknown_extensions
 
 
 
@@ -102,14 +108,7 @@ def main():
 
         organizer = FileOrganizer(folder)
 
-        images, videos, documents, audio, archives, others = organizer.sort_files()
-        
-        print(f"Інші {others}")
-        print(f"Заархівовані файли:{archives}")
-        print(f"Музика:{audio}")
-        print(f"Документи :{documents}")
-        print(f"Відео :{videos}")
-        print(f"Фото:{images}")
+        images, videos, documents, audio, archives, unknown_extensions = organizer.sort_files()
 
         print('Сортування завершено.')
 
@@ -125,19 +124,7 @@ def main():
                 folder = input('Введіть шлях до теки для сортування: ')
                 if os.path.isdir(folder):
                     organizer = FileOrganizer(folder)
-                    #organizer.sort_files()
-                    
-                    
-                    images, videos, documents, audio, archives, others= organizer.sort_files()
-        
-                    #print(destination_folder)
-                    print(F"Інші: {others}")
-                    print(f"Заархівовані файли:{archives}")
-                    print(f"Музика:{audio}")
-                    print(f"Документи :{documents}")
-                    print(f"Відео :{videos}")
-                    print(f"Фото:{images}")
-                    
+                    organizer.sort_files()
                 else:
                     print('Невірний шлях до теки.')
 
