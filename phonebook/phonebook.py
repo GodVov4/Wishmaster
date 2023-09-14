@@ -90,7 +90,8 @@ def is_valid_phone(phone: str) -> bool:
 
 # Перевірка правильності формату дня народження (дати)
 def is_valid_birthday(birthday: str) -> bool:
-    return bool(re.match(r"^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$", birthday))
+    return bool(re.match(r"^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$", birthday)
+                and datetime.today().year-100 < int(birthday[:4]) < datetime.today().year)
 
 
 # Перевірка правильності формату пошти
