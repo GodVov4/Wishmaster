@@ -199,17 +199,21 @@ def main():
         elif choice == "9":
 
             # Додаємо пропозицію повернутися у цикл вибору
-            result = input("Продовжити (y) чи повернутися у меню вибору (n)? ")
+            result = input("Вийти (y) чи повернутися у меню вибору (n)? ")
             if result == "n":
                 continue
 
             else:
 
-                # Зберігаємо список нотаток у файл
-                notebook.save_to_file()
-                print("Нотатки збережено")
+                if len(notebook.notes):
 
-                break
+                    # Зберігаємо список нотаток у файл
+                    notebook.save_to_file()
+                    print("Нотатки збережено")
+                    break
+
+                else:
+                    break
 
         else:
             print("Невірний вибір")
