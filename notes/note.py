@@ -164,7 +164,7 @@ class Notebook:
     def print_notes(self):
 
         for i, note in enumerate(self.notes):
-            print(f"Індекс:{i}. {note}")
+            print(f"{i+1}. {note}")
 
     def show_saved_files(self):
 
