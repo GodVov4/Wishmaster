@@ -165,3 +165,49 @@ class Notebook:
 
         for i, note in enumerate(self.notes):
             print(f"Індекс:{i}. {note}")
+
+    def show_saved_files(self):
+
+        directory = ".\\"  # шлях до каталогу
+        extension = ".pickle"  # розширення файлу
+        files = []  # список файлів
+
+        # проходимо по всіх елементах у каталозі
+        for element in os.listdir(directory):
+            # якщо елемент є файлом і має потрібне розширення
+            if os.path.isfile(os.path.join(directory, element)) and element.endswith(extension):
+
+                # додаємо ім'я файлу до списку
+                files.append(element)
+
+        # виводимо список файлів на екран
+        print("Збережені файли:")
+        for i, file in enumerate(files):
+            print(f"{i + 1} - {file}")
+
+        # повертаємо список файлів
+        return files
+
+    # Метод, який видаляє вибраний файл з каталогу.
+    def delete_selected_file(self):
+
+        directory = ".\\"
+        files = self.show_saved_files()  # отримуємо список файлів
+
+        if files:  # якщо список не пустий
+
+            # зчитуємо номер файлу для видалення
+            number = int(input("Введіть номер файлу для видалення: "))
+
+            if 1 <= number <= len(files):  # якщо номер в межах списку
+
+                file = files[number - 1]  # отримуємо ім'я файлу за номером
+                # видаляємо файл з каталогу
+                os.remove(os.path.join(directory, file))
+                print(f"Файл {file} видалено")
+
+            else:
+                print("Невірний номер")
+
+        else:
+            print("Немає збережених файлів")
