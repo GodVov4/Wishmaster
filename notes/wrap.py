@@ -1,4 +1,5 @@
 from note import Notebook
+
 import os
 
 
@@ -38,7 +39,8 @@ def main():
         print("6 - Показати створені нотатки")
         print("7 - Сортування по даті створення")
         print("8 - Завантажити нотатку")
-        print("9 - Зберегти та вийти")
+        print("9 - Видалити вибраний файл")
+        print("10 - Зберегти та вийти")
 
         choice = input("Ваш вибір: ")
 
@@ -196,7 +198,7 @@ def main():
                 except FileNotFoundError:
                     print('Файл не знайдено. Спробуйте ввести знову')
 
-        elif choice == "9":
+        elif choice == "10":
 
             # Додаємо пропозицію повернутися у цикл вибору
             result = input("Вийти (y) чи повернутися у меню вибору (n)? ")
@@ -214,6 +216,24 @@ def main():
 
                 else:
                     break
+
+        elif choice == "9":
+
+            # Додаємо пропозицію повернутися у цикл вибору
+            result = input("Продовжити (y) чи повернутися у меню вибору (n)? ")
+            if result == "n":
+                continue
+
+            else:
+
+                while True:
+                    try:
+                        # Видаляємо вибраний файл з каталогу
+                        notebook.delete_selected_file()
+                        break
+                    except ValueError:
+                        print("Введіть, будь ласка, номер файлу")
+                        continue
 
         else:
             print("Невірний вибір")
