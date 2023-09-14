@@ -154,7 +154,7 @@ class Notebook:
     # Метод, який завантажує список нотаток з файлy.
     def load_from_file(self, filename):
 
-        with open(f'saves/{filename}', "rb") as file:
+        with open(filename, "rb") as file:
 
             old_notebook = pickle.load(file)
             for note in old_notebook.notes:

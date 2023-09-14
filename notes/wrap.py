@@ -4,7 +4,7 @@ import os
 
 def saved_files():
 
-    directory = ".\\"  # шлях до каталогу
+    directory = "."  # шлях до каталогу
     extension = ".pickle"  # розширення файлу
     files = []  # список файлів
 
