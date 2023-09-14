@@ -1,4 +1,5 @@
 import datetime
+import os.path
 import pickle
 
 
@@ -15,16 +16,15 @@ class Note:
     def __str__(self):
         return f"Text: {self.text}\nKeywords: {', '.join(self.keywords)}\nDate: {self.date}"
 
-# Клас, який представляє зошит з нотатками
 
-
+# Клас, який представляє записник з нотатками
 class Notebook:
 
     # Конструктор класу, який ініціалізує порожній список нотаток
     def __init__(self):
         self.notes = []  # Список нотаток
 
-    # Метод, який додає нову нотатку до зошита
+    # Метод, який додає нову нотатку до нотатника
     def add_note(self, text='', keywords=None):
 
         # Створюємо екземпляр класу Note з заданим текстом та ключовими словами
@@ -69,7 +69,7 @@ class Notebook:
     def search_by_text(self, text):
 
         results = []
-        for note in self.notes:  # Проходимо по всіх нотатках у зошиті
+        for note in self.notes:  # Проходимо по всіх нотатках у нотатнику
 
             # Переводимо текст нотатки та запит у нижній регістр для незалежності від регістру
             note_text = note.text.lower()
@@ -101,32 +101,49 @@ class Notebook:
         # Використовуємо метод sort для списку нотаток, вказавши ключ сортування та напрямок
         self.notes.sort(key=lambda note: note.date, reverse=reverse)
 
-    # Метод, який зберігає список нотаток у json файл
+    # Метод, який зберігає список нотаток у pickle файл
     def save_to_file(self, filename=None):
+        '''
+          |============================
+          | Залишаю filename і його обробку у цьому методі, для можливості 
+          | розширення. Наприклад, для збереження нотаток вручну
+          |============================
+        '''
 
-        if not filename:
+        # if not filename:
 
-            for note in self.notes:  # Проходимо по всіх нотатках у зошиті
+        for note in self.notes:  # Проходимо по всіх нотатках у нотатнику
 
-                text = note.text  # Отримуємо текст нотатки
-                words = text.split()  # Розбиваємо текст на слова за пробілами
+            text = note.text  # Отримуємо текст нотатки
+            words = text.split()  # Розбиваємо текст на слова за пробілами
 
-                if words:
-                    # Якщо є хоча б одне слово, то використовуємо перше слово як ім'я файлу
-                    filename = words[0] + ".bin"
+            if words:
+                # Якщо є хоча б одне слово, то використовуємо перше слово як ім'я файлу
+                file = words[0] + ".pickle"
+                break
 
-                else:
-                    # Якщо немає слів, то використовуємо дату створення нотатки як ім'я файлу
-                    filename = str(note.date) + ".bin"
+            else:
+                # Якщо немає слів, то використовуємо дату створення нотатки як ім'я файлу
+                file = str(note.date) + ".pickle"
+                break
 
-            with open(filename, "wb") as file:
+        if os.path.exists(file):
 
-                pickle.dump(self, file)
+            path_list = file.split('.')
+            file = path_list[0] + '1.' + path_list[1]
+            with open(file, "wb") as f:
+                pickle.dump(self, f)
 
         else:
-            with open(filename, "wb") as file:
+            with open(file, "wb") as f:
+                pickle.dump(self, f)
 
-                pickle.dump(self, file)
+        # else:
+
+        #     filename = filename + '.pickle'
+        #     with open(filename, "wb") as file:
+
+        #         pickle.dump(self, file)
 
     # Метод, який завантажує список нотаток з файлy
     def load_from_file(self, filename):
